@@ -39,9 +39,9 @@ const generateId = () => {
 const date = new Date();
 const formmatedDate = date.toString();
 
-app.get("/", (request, response) => {
-  response.send("<h1>Hello World!</h1>");
-});
+// app.get("/", (request, response) => {
+//   response.send("<h1>Hello World!</h1>");
+// });
 
 app.get("/api/persons", (request, response) => {
   response.json(persons);
