@@ -52,6 +52,9 @@ app.get("/api/persons/:id", (request, response) => {
 
   const person = persons.find((person) => person.id === id);
 
+  if (!person) {
+    return response.status(404).json({ error: "person not found" });
+  }
   response.json(person);
 });
 
@@ -92,7 +95,7 @@ app.delete("/api/persons/:id", (request, response) => {
 
 app.get("/api/persons/info", (request, response) => {
   response.send(
-    `<h3>Phonebook has info for ${persons.length}</h3><p>${formmatedDate}</p>`
+    `<h3>Phonebook has info for ${persons.length} people</h3><p>${formmatedDate}</p>`
   );
 });
 
