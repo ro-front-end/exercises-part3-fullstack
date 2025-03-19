@@ -2,6 +2,8 @@ const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
 
+const Person = require("./models/person");
+
 const app = express();
 
 app.use(cors());
@@ -45,53 +47,50 @@ const formmatedDate = date.toString();
 // });
 
 app.get("/api/persons", (request, response) => {
-  response.json(persons);
+  Person.find({})
+    .then((persons) => {
+      response.json(persons);
+    })
+    .catch((error) => {
+      response.status(500).json({ error: "Error retrieving persons" });
+    });
 });
 
 app.get("/api/persons/:id", (request, response) => {
-  const id = Number(request.params.id);
-
-  const person = persons.find((person) => person.id === id);
-
-  if (!person) {
-    return response.status(404).json({ error: "person not found" });
-  }
-  response.json(person);
+  Person.findById(request.params.id)
+    .then((person) => {
+      response.json(person);
+    })
+    .catch((error) => {
+      response.status(500).json({ error: "Error retrieving person" });
+    });
 });
 
 app.post("/api/persons", (request, response) => {
   const body = request.body;
 
   if (!body.name || !body.number) {
-    response.status(400).json({
-      error: "missing content",
-    });
+    return response.status(400).json({ error: "name or number missing" });
   }
 
-  const nameExists = persons.some((person) => person.name === body.name);
-  if (nameExists) {
-    return response.status(400).json({
-      error: "name must be unique",
-    });
-  }
-
-  const newPerson = {
+  const person = new Person({
     name: body.name,
     number: body.number,
-    important: Boolean(body.important) || false,
-    id: generateId(),
-  };
+  });
 
-  persons.push(newPerson);
-
-  response.status(201).json(newPerson);
+  person.save().then((savedPerson) => {
+    response.json(savedPerson);
+  });
 });
 
 app.delete("/api/persons/:id", (request, response) => {
-  id = Number(request.params.id);
-  persons = persons.filter((person) => person.id !== id);
-
-  response.status(204).end();
+  Person.findByIdAndDelete(request.params.id)
+    .then(() => {
+      response.status(204).end();
+    })
+    .catch((error) => {
+      response.status(500).json({ error: "Error deleting person" });
+    });
 });
 
 app.get("/api/persons/info", (request, response) => {
@@ -106,7 +105,7 @@ const unknownEndpoint = (request, response) => {
 
 app.use(unknownEndpoint);
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
