@@ -44,7 +44,7 @@ const date = new Date();
 const formmatedDate = date.toString();
 
 app.get("/", (request, response) => {
-  response.send("<h1>Phonebook!</h1>");
+  response.sendFile(__dirname + "/dist/index.html");
 });
 
 app.get("/api/persons", (request, response) => {
@@ -145,7 +145,7 @@ const errorHandler = (error, request, response, next) => {
 app.use(unknownEndpoint);
 app.use(errorHandler);
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
