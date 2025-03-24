@@ -6,6 +6,8 @@ const Person = require("./models/person");
 
 const app = express();
 
+const path = require("path");
+
 app.use(cors());
 app.use(express.json());
 app.use(express.static("dist"));
@@ -44,7 +46,7 @@ const date = new Date();
 const formmatedDate = date.toString();
 
 app.get("/", (request, response) => {
-  response.sendFile(__dirname + "/dist/index.html");
+  response.sendFile(path.join(__dirname, "dist", "index.html"));
 });
 
 app.get("/api/persons", (request, response) => {
