@@ -6,6 +6,8 @@ mongoose.set("strictQuery", false);
 
 const url = process.env.MONGODB_URI;
 
+const phoneRegex = /^(?:\d{2}|\d{3})-\d+$/;
+
 console.log("connecting to:", url);
 
 mongoose
@@ -18,8 +20,18 @@ mongoose
   });
 
 const personSchema = new mongoose.Schema({
-  name: String,
-  number: String,
+  name: { type: String, minlength: 3, required: true },
+  number: {
+    type: String,
+    validate: {
+      validator: function (v) {
+        return phoneRegex.test(v);
+      },
+      message: (props) => `${props.value} is not a valid phone number!`,
+    },
+    minlength: 8,
+    required: true,
+  },
 });
 
 personSchema.set("toJSON", {
