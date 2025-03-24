@@ -43,9 +43,9 @@ app.use(morgan("dev"));
 const date = new Date();
 const formmatedDate = date.toString();
 
-// app.get("/", (request, response) => {
-//   response.send("<h1>Hello World!</h1>");
-// });
+app.get("/", (request, response) => {
+  response.send("<h1>Phonebook!</h1>");
+});
 
 app.get("/api/persons", (request, response) => {
   Person.find({})
@@ -148,7 +148,7 @@ const errorHandler = (error, request, response, next) => {
 app.use(unknownEndpoint);
 app.use(errorHandler);
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
